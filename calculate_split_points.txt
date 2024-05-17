@@ -1,0 +1,38 @@
+def calculate_split_points(elevation_height, height, upper_extension_length=0, angle_degrees=30, lower_slope_length=2025, scale_factor=100):
+    '''
+    Calculate a series of split points along a slope based on given parameters.
+
+    Parameters:
+        elevation_height (int): Elevation height.
+        height (int): height.
+        upper_extension_length (int): Extension length at the upper end.
+        upper_slope_length (int): Length of the upper slope section.
+        lower_slope_length (int): Length of the lower section.
+        angle_degrees (int): Angle in degrees.
+        scale_factor (int, optional): Scaling factor for coordinates.
+
+    Returns:
+        list of gp_Pnt: A list of split points.
+    '''
+    angle_radians = math.radians(angle_degrees)
+    sin_val = math.sin(angle_radians)
+    cos_val = math.cos(angle_radians)
+    tan_val = math.tan(angle_radians)
+    upper_length = upper_extension_length + 2566
+    slope_legth = elevation_height / sin_val - lower_slope_length
+    points = []
+    current_distance = 0  # Start from the beginning of the slope
+
+    # Calculate the starting point
+    x_start = upper_length + elevation_height / tan_val - lower_slope_length * cos_val
+    z_start = height + lower_slope_length * sin_val
+    print(slope_legth)
+    # Loop to generate points every 1200 units until reaching the lower length limit
+    while current_distance <= slope_legth - 3630:
+        print(current_distance)
+        print(slope_legth - 3630)
+        x = x_start - current_distance * cos_val
+        z = z_start + current_distance * sin_val
+        points.append(gp_Pnt(x / scale_factor, 0, z / scale_factor))
+        current_distance += 1200
+    return points
